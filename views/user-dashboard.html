@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Pengguna</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f1f3f5; /* Consistent with pesan.html */
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .navbar {
+            background-color: #007bff; /* Consistent with pesan.html */
+            color: white;
+            padding: 15px 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar img {
+            height: 40px;
+            margin-right: 15px;
+        }
+        .navbar h4 {
+            margin: 0;
+            font-size: 24px;
+            color: white;
+        }
+        .logo {
+            background-color: #e9ecef;
+            padding: 5px;
+            border-bottom-right-radius: 10px;
+        }
+
+        /* User Info Styling - Consistent with pesan.html */
+        .user-info {
+            padding: 20px;
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            margin: 15px; /* Consistent margin */
+        }
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .profile-circle {
+            width: 40px;
+            height: 40px;
+            background-color: #007bff; /* Consistent color */
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 5px;
+        }
+        .info-item p {
+            margin: 0;
+            font-size: 16px; /* Consistent font size */
+            color: #555;
+        }
+        .email-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 250px; /* Adjust as needed */
+        }
+
+        /* Dashboard Content Container */
+        .dashboard-content {
+            flex: 1; /* Allows it to take remaining height */
+            overflow-y: auto; /* Enables scrolling if content overflows */
+            padding: 0 15px; /* Consistent margin */
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* Space between cards */
+            padding-bottom: 20px; /* Add some bottom padding for scroll */
+        }
+
+        /* Stats Card Styling - Consistent with other cards */
+        .stats-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px; /* Adjust padding for content */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            /* Removed fixed width to allow flexibility, rely on parent padding */
+        }
+        .stats-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center; /* Vertically align text and value */
+            padding: 10px 0;
+            border-bottom: 1px dashed #eee; /* Light dashed border */
+            font-size: 16px; /* Consistent font size */
+            color: #444; /* Darker text for readability */
+        }
+        .stats-item:last-child {
+            border-bottom: none;
+        }
+        .stats-item span:first-child {
+            font-weight: bold; /* Make labels bold */
+        }
+        .stats-item span:last-child {
+            color: #007bff; /* Highlight values */
+            font-weight: bold;
+        }
+
+        /* Button Group Styling */
+        .button-group {
+            padding: 0 15px; /* Consistent margin */
+            margin-bottom: 20px; /* Space below buttons */
+            display: flex;
+            flex-direction: column; /* Stack buttons vertically */
+            gap: 15px; /* Space between buttons */
+        }
+        .btn-action {
+            display: block; /* Make buttons take full width */
+            width: 100%;
+            padding: 12px 20px;
+            font-size: 18px; /* Larger font size */
+            font-weight: bold;
+            border-radius: 8px; /* Softer corners */
+            text-decoration: none; /* Remove underline for links */
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+        .btn-primary-action {
+            background-color: #28a745; /* Green for primary action (Pesan) */
+            color: white;
+            border: none;
+        }
+        .btn-primary-action:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+        .btn-secondary-action {
+            background-color: #dc3545; /* Red for logout */
+            color: white;
+            border: none;
+        }
+        .btn-secondary-action:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+        }
+        .btn-tertiary-action { /* New style for Riwayat Pesan */
+            background-color: #007bff; /* Blue for history */
+            color: white;
+            border: none;
+        }
+        .btn-tertiary-action:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <img class="logo" src="/assets/foto/logo-piko.png" alt="Logo">
+        <h4>Dashboard Pengguna</h4>
+    </nav>
+
+    <div class="user-info">
+        <div class="info-item">
+            <div class="profile-circle">
+                <span id="profile-initial"></span>
+            </div>
+            <div>
+                <p><span id="nama-pelanggan"></span></p>
+                <p><span id="email-pelanggan" class="email-text"></span></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-content">
+        <div class="stats-card">
+            <div class="stats-item">
+                <span>🍽️ Pesanan Makanan</span>
+                <span id="total-pesanan">- kali</span>
+            </div>
+            <div class="stats-item">
+                <span>🚗 Cuci Mobil</span>
+                <span id="total-cuci">- kali</span>
+            </div>
+            <div class="stats-item">
+                <span>💸 Diskon Akun</span>
+                <span id="diskon-akun">-</span>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <a href="/pesan-makanan" class="btn btn-action btn-primary-action">🍔 Pesan Makanan</a>
+            <a href="/riwayat-pesan" class="btn btn-action btn-tertiary-action">📜 Riwayat Pesanan</a>
+            <button class="btn btn-action btn-secondary-action" id="logoutBtn">🚪 Logout</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                const response = await fetch('/api/dashboard-info', {
+                    method: 'GET', // Changed to GET as it's retrieving information
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error("Gagal mengambil data dashboard. Status: " + response.status);
+                }
+
+                const data = await response.json();
+
+                // Update user info
+                document.getElementById("nama-pelanggan").textContent = data.nama;
+                document.getElementById("email-pelanggan").textContent = data.email;
+
+                // Set profile initials
+                const initials = getInitials(data.nama);
+                document.getElementById("profile-initial").textContent = initials;
+
+                // Update statistics
+                document.getElementById("total-pesanan").textContent = `${data.total_pesanan} kali`;
+                document.getElementById("total-cuci").textContent = `${data.total_cuci} kali`;
+                document.getElementById("diskon-akun").textContent = `${data.diskon_akun}%`;
+
+            } catch (error) {
+                console.error("Error fetching dashboard info:", error);
+                // Fallback for UI if API fails
+                document.getElementById("nama-pelanggan").textContent = "Pengguna";
+                document.getElementById("email-pelanggan").textContent = "info@domain.com";
+                document.getElementById("profile-initial").textContent = "PU";
+                document.getElementById("total-pesanan").textContent = "0 kali";
+                document.getElementById("total-cuci").textContent = "0 kali";
+                document.getElementById("diskon-akun").textContent = "0%";
+                alert("Gagal memuat data dashboard. Silakan coba lagi.");
+            }
+
+            // Helper function for initials
+            function getInitials(nama) {
+                if (!nama) return "??";
+                const parts = nama.trim().split(" ");
+                if (parts.length === 1) {
+                    return parts[0].substring(0, 2).toUpperCase();
+                }
+                return (parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
+            }
+
+            // Logout button functionality (assuming /logout endpoint)
+            document.getElementById('logoutBtn').addEventListener('click', async () => {
+                try {
+                    const logoutRes = await fetch('/api/logout', {
+                        method: 'POST', // Or GET, depending on your backend
+                        credentials: 'include'
+                    });
+
+                    if (logoutRes.ok) {
+                        localStorage.clear(); // Clear local storage on logout
+                        window.location.href = '/login'; // Redirect to login page
+                    } else {
+                        alert('Gagal logout. Silakan coba lagi.');
+                    }
+                } catch (error) {
+                    console.error('Error during logout:', error);
+                    alert('Terjadi kesalahan saat logout.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

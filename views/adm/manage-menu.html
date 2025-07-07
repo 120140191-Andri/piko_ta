@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Piko CarWash & Caffe | Manage Menu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../assets/plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <link rel="stylesheet" href="../assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="../assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+  <link rel="stylesheet" href="../assets/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="../assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+  <link rel="stylesheet" href="../assets/plugins/daterangepicker/daterangepicker.css">
+  <link rel="stylesheet" href="../assets/plugins/summernote/summernote-bs4.css">
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.0.1/css/dataTables.dataTables.css" />
+  <style>
+    
+  </style>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+  <!-- Sidebar -->
+  <aside class="main-sidebar sidebar-dark-primarys elevation-4">
+    <a href="/" class="brand-link d-flex align-items-center">
+      <img src="/assets/foto/logo-piko.png" alt="Logo" class="brand-image">
+      <span class="brand-text font-weight-light">CarWash & Caffe</span>
+    </a>
+
+    <div class="sidebar">
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" role="menu" data-accordion="false">
+          <li class="nav-item">
+            <a href="/dashboard" class="nav-link">
+              <i class="nav-icon fas fa-home"></i><p>Dashboard</p>
+            </a>
+          </li>
+          <li class="nav-item"><a href="manage-pesan.php" class="nav-link"><i class="nav-icon fas fa-tv"></i><p>Pesan Layar</p></a></li>
+          <li class="nav-item"><a href="/antrian-cuci" class="nav-link active"><i class="nav-icon fas fa-list"></i><p>Antrian Cuci</p></a></li>
+          <li class="nav-item"><a href="pesanan.php" class="nav-link"><i class="nav-icon fas fa-coffee"></i><p>Pesanan Kafe</p></a></li>
+          <li class="nav-item"><a href="manage-harga-cuci.php" class="nav-link"><i class="nav-icon fas fa-tag"></i><p>Harga Cuci</p></a></li>
+          <li class="nav-item"><a href="manage-menu.php" class="nav-link"><i class="nav-icon fas fa-utensils"></i><p>Menu Kafe</p></a></li>
+          <li class="nav-item"><a href="manage-pelanggan.php" class="nav-link"><i class="nav-icon fas fa-users"></i><p>Pelanggan</p></a></li>
+          <li class="nav-item"><a href="ganti-password-kasir.php" class="nav-link"><i class="nav-icon fas fa-key"></i><p>Pass Kasir</p></a></li>
+          <li class="nav-item"><a href="ganti-password-admin.php" class="nav-link"><i class="nav-icon fas fa-lock"></i><p>Ganti Password</p></a></li>
+          <li class="nav-item"><a href="logout.php" class="nav-link"><i class="nav-icon fas fa-sign-out-alt"></i><p>Sign Out</p></a></li>
+        </ul>
+      </nav>
+    </div>
+  </aside>
+
+  <div class="content-wrapper">
+    <section class="content">
+      <div class="container-fluid">
+        <div class="card card-info">
+          <div class="card-header">
+            <h3 class="card-title">Manage Menu Kafe</h3>
+            <button class="btn btn-success float-right" data-toggle="modal" data-target="#modalTambah">Tambah Menu</button>
+          </div>
+          <div class="card-body">
+            <table id="example1" class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Nama Menu</th>
+                  <th>Harga</th>
+                  <th>Gambar</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Data akan diisi otomatis menggunakan JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="main-footer">
+    <strong>Copyright &copy; by Piko CarWash & Caffe</strong>
+    All rights reserved.
+  </footer>
+</div>
+
+<!-- Modal Tambah Menu -->
+<div class="modal fade" id="modalTambah" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Tambah Menu</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="formTambahMenu">
+          <div class="form-group">
+            <label>Nama Menu</label>
+            <input type="text" id="namaMenu" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label>Harga</label>
+            <input type="number" id="hargaMenu" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label>Gambar Menu</label>
+            <input type="file" id="fotoMenu" class="form-control" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="btnSimpan">Simpan</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Edit Menu -->
+<div class="modal fade" id="modalEdit" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Menu</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label>Nama Menu</label>
+            <input type="text" class="form-control" value="Nasi Goreng Spesial">
+          </div>
+          <div class="form-group">
+            <label>Harga</label>
+            <input type="number" class="form-control" value="25000">
+          </div>
+          <div class="form-group">
+            <label>Gambar Menu</label>
+            <input type="file" class="form-control">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">Simpan Perubahan</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+<!-- jQuery (kalau belum ada) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<!-- <script src="../assets/plugins/jquery/jquery.min.js"></script> -->
+<script src="../assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/dist/js/adminlte.js"></script>
+
+<script>
+$(document).ready(function () {
+  // Inisialisasi DataTable
+  var table = $('#example1').DataTable({
+    ajax: {
+      url: '/api-adm/menu-kafe', // Path API
+      dataSrc: ''
+    },
+    columns: [
+      {
+        data: null,
+        render: function (data, type, row, meta) {
+          return meta.row + 1; // No Urut
+        }
+      },
+      { data: 'nama_menu' },
+      { data: 'harga_menu' },
+      {
+        data: 'foto_menu',
+        render: function(data) {
+          return `<img src="/uploads/${data}" alt="Menu Image" width="50">`;  // Pastikan path benar
+        }
+      },
+      {
+        data: null,
+        render: function (data, type, row) {
+          return `
+            <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modalEdit" data-id="${row.id_menu}">Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="hapusMenu(${row.id_menu})">Hapus</button>
+          `;
+        }
+      }
+    ]
+  });
+});
+
+// Fungsi untuk menambah menu
+$('#btnSimpan').click(function() {
+    // Ambil data dari input form
+    const namaMenu = $('#namaMenu').val();
+    const hargaMenu = $('#hargaMenu').val();
+    const fotoMenu = $('#fotoMenu')[0].files[0];
+
+    // Periksa apakah semua field terisi
+    if (!namaMenu || !hargaMenu || !fotoMenu) {
+        alert('Semua kolom harus diisi!');
+        return;
+    }
+
+    // Buat FormData untuk mengirimkan data gambar
+    let formData = new FormData();
+    formData.append('nama_menu', namaMenu);
+    formData.append('harga_menu', hargaMenu);
+    formData.append('foto_menu', fotoMenu);
+
+    // Kirim data ke API
+    $.ajax({
+        url: '/api-adm/menu-kafe', // Ganti dengan URL endpoint API yang sesuai
+        type: 'POST',
+        data: formData,
+        processData: false, // Jangan proses data
+        contentType: false, // Jangan set content-type
+        success: function(response) {
+            alert('Menu berhasil ditambahkan!');
+            $('#modalTambah').modal('hide'); // Tutup modal
+            $('#formTambahMenu')[0].reset(); // Reset form
+            $('#example1').DataTable().ajax.reload(); // Reload DataTable
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat menambah menu');
+        }
+    });
+});
+
+// Fungsi Hapus (contoh)
+function hapusMenu(id) {
+  if (confirm('Yakin ingin menghapus menu ini?')) {
+    $.ajax({
+      url: '/api-adm/menu-kafe/' + id, // Hapus menu berdasarkan id
+      type: 'DELETE',
+      success: function () {
+        alert('Menu berhasil dihapus');
+        $('#example1').DataTable().ajax.reload(); // Reload tabel
+      },
+      error: function () {
+        alert('Gagal menghapus menu');
+      }
+    });
+  }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model admin {
+  id_admin Int @id @default(autoincrement())
+  email    String @unique
+  password String
+  nama     String
+}
+
+model pembayaran {
+  id_pembayaran       Int             @id @default(autoincrement())
+  id_pelanggan        Int
+  id_diskon           Int?            // nullable karena diskon opsional
+  metode_pembayaran   String
+  gross_amount        Int
+  payment_type        String
+  transaction_status  String
+  transaction_time    DateTime
+
+  pelanggan           pelanggan       @relation(fields: [id_pelanggan], references: [id_pelanggan])
+  diskon              diskon?         @relation(fields: [id_diskon], references: [id_diskon])
+  pesanan_kafe        pesanan_kafe[]
+  antrian_cuci        antrian_cuci[]
+}
+
+model pelanggan {
+  id_pelanggan Int       @id @default(autoincrement())
+  email        String    @unique
+  password     String
+  nama         String
+
+  pembayaran   pembayaran[]
+  diskon       diskon[]   // 1 pelanggan bisa punya banyak diskon
+}
+
+model diskon {
+  id_diskon     Int       @id @default(autoincrement())
+  nama          String?
+  persen        Int
+  aktif         Boolean   @default(true)
+  mulai         DateTime
+  berakhir      DateTime
+  id_pelanggan  Int       // foreign key ke pelanggan
+
+  pelanggan     pelanggan @relation(fields: [id_pelanggan], references: [id_pelanggan])
+  pembayaran    pembayaran[]
+}
+
+model menu_kafe {
+  id_menu     Int           @id @default(autoincrement())
+  nama_menu   String
+  harga_menu  String
+  foto_menu   String
+
+  pesanan     pesanan_kafe[]   // Relasi: menu bisa punya banyak pesanan
+}
+
+model pesanan_kafe {
+  id_pesanan    Int       @id @default(autoincrement())
+  id_menu       Int
+  id_pembayaran Int
+  jumlah        Int
+
+  menu          menu_kafe     @relation(fields: [id_menu], references: [id_menu])
+  pembayaran    pembayaran    @relation(fields: [id_pembayaran], references: [id_pembayaran])
+}
+
+model antrian_cuci {
+  id_antrian     Int        @id @default(autoincrement())
+  no_antrian     Int
+  id_pembayaran  Int
+  plat_nomor     String
+  merek_mobil    String
+  status         String
+  tgl_waktu      DateTime
+
+  pembayaran     pembayaran  @relation(fields: [id_pembayaran], references: [id_pembayaran])
+}

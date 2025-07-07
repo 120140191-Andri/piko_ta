@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Piko CarWash & Caffe | Dashboard Dummy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../assets/plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <link rel="stylesheet" href="../assets/dist/css/adminlte.min.css">
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+  <style>
+    body {
+      background-color: #e0e0e0;
+      color: #000;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #ccc;
+    }
+    .card-header {
+      background-color: #555 !important;
+      color: #fff;
+    }
+    .input-group-text {
+      background: #777;
+      color: #fff;
+    }
+    .btn {
+      background: #888;
+      color: #fff;
+    }
+    .btn:hover {
+      background: #666;
+    }
+    .main-footer {
+      background: #222;
+      color: #fff;
+    }
+  </style>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+  <!-- Sidebar -->
+  <aside class="main-sidebar sidebar-dark-primarys elevation-4">
+    <a href="/" class="brand-link d-flex align-items-center">
+      <img src="/assets/foto/logo-piko.png" alt="Logo" class="brand-image">
+      <span class="brand-text font-weight-light">CarWash & Caffe</span>
+    </a>
+
+    <div class="sidebar">
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" role="menu" data-accordion="false">
+          <li class="nav-item">
+            <a href="dashboard" class="nav-link">
+              <i class="nav-icon fas fa-home"></i><p>Dashboard</p>
+            </a>
+          </li>
+          <li class="nav-item"><a href="manage-pesan.php" class="nav-link"><i class="nav-icon fas fa-tv"></i><p>Pesan Layar</p></a></li>
+          <li class="nav-item"><a href="antrian-cuci" class="nav-link active"><i class="nav-icon fas fa-list"></i><p>Antrian Cuci</p></a></li>
+          <li class="nav-item"><a href="pesanan.php" class="nav-link"><i class="nav-icon fas fa-coffee"></i><p>Pesanan Kafe</p></a></li>
+          <li class="nav-item"><a href="manage-harga-cuci.php" class="nav-link"><i class="nav-icon fas fa-tag"></i><p>Harga Cuci</p></a></li>
+          <li class="nav-item"><a href="manage-menu" class="nav-link"><i class="nav-icon fas fa-utensils"></i><p>Menu Kafe</p></a></li>
+          <li class="nav-item"><a href="manage-pelanggan.php" class="nav-link"><i class="nav-icon fas fa-users"></i><p>Pelanggan</p></a></li>
+          <li class="nav-item"><a href="ganti-password-kasir.php" class="nav-link"><i class="nav-icon fas fa-key"></i><p>Pass Kasir</p></a></li>
+          <li class="nav-item"><a href="ganti-password-admin.php" class="nav-link"><i class="nav-icon fas fa-lock"></i><p>Ganti Password</p></a></li>
+          <li class="nav-item"><a href="logout.php" class="nav-link"><i class="nav-icon fas fa-sign-out-alt"></i><p>Sign Out</p></a></li>
+        </ul>
+      </nav>
+    </div>
+  </aside>
+
+  <div class="content-wrapper">
+    <section class="content">
+      <div class="container-fluid">
+        <div class="card card-info">
+          <div class="card-header">
+            <h3 class="card-title">Data Antrian Kendaraan</h3>
+          </div>
+          <div class="card-body">
+            <table id="tabel-antrian" class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Plat Nomor</th>
+                  <th>Jenis Mobil</th>
+                  <th>Status</th>
+                  <th>Tanggal</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- jQuery (kalau belum ada) -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <script>
+  $(document).ready(function () {
+    $('#tabel-antrian').DataTable({
+      ajax: {
+        url: '/api-adm/antrian-cuci', // sesuaikan path API
+        dataSrc: ''
+      },
+      columns: [
+        {
+          data: null,
+          render: function (data, type, row, meta) {
+            return meta.row + 1; // No Urut
+          }
+        },
+        { data: 'plat_nomor' },
+        { data: 'merek_mobil' },
+        { data: 'status' },
+        {
+          data: 'tgl_waktu',
+          render: function (data) {
+            const d = new Date(data);
+            return d.toLocaleDateString('id-ID') + ' ' + d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+          }
+        }
+      ]
+    });
+  });
+  </script>
+
+  <footer class="main-footer">
+    <strong>Copyright &copy; by Piko CarWash & Caffe</strong>
+    All rights reserved.
+  </footer>
+</div>
+
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<script src="../assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/dist/js/adminlte.js"></script>
+</body>
+</html>

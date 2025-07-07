@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riwayat Pemesanan</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            background-color: #f1f3f5;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .navbar {
+            background-color: #007bff; /* Matching the previous navbar */
+            color: white;
+            padding: 15px 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar img {
+            height: 40px;
+            margin-right: 15px;
+        }
+        .navbar h4 {
+            margin: 0;
+            font-size: 24px;
+            color: white;
+        }
+        /* User Info Styling - Matching previous design */
+        .user-info {
+            padding: 20px;
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            margin: 15px;
+        }
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .profile-circle {
+            width: 40px;
+            height: 40px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 5px;
+        }
+        .info-item p {
+            margin: 0;
+            font-size: 16px;
+            color: #555;
+        }
+        .email-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 250px; /* Adjust as needed */
+        }
+        /* Order History Container */
+        .order-history-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 15px; /* Adjust padding to match user-info margin */
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* Gap between cards */
+            padding-bottom: 20px; /* Add some bottom padding for scroll */
+        }
+        /* Order History Card Styling - Similar to order-card */
+        .order-history-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex; /* Use flexbox for layout */
+            flex-direction: column; /* Stack details vertically */
+            gap: 5px; /* Space between lines in the card */
+            transition: transform 0.2s ease-in-out;
+        }
+        /* Remove cursor: pointer; from card and add to button for clarity */
+        /* .order-history-card:hover {
+            transform: translateY(-3px);
+        } */
+        .order-history-card h6 {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .order-history-card p {
+            margin: 0;
+            font-size: 14px;
+            color: #555;
+        }
+        .status-paid {
+            color: green;
+            font-weight: bold;
+        }
+        .status-unpaid, .status-pending {
+            color: orange; /* pending also orange */
+            font-weight: bold;
+        }
+        .status-failed, .status-expire, .status-cancel, .status-deny { /* Added .status-deny */
+            color: red; /* failed, expired, canceled, denied also red */
+            font-weight: bold;
+        }
+        .logo {
+            background-color: #e9ecef;
+            padding: 5px;
+            border-bottom-right-radius: 10px;
+        }
+
+        /* Styling for order details section */
+        .order-details-section {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed #eee;
+            /* display: none; */ /* Handled by Bootstrap's collapse class */
+        }
+        .order-details-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .order-details-section li {
+            font-size: 14px;
+            color: #444;
+            margin-bottom: 3px;
+        }
+        .order-details-section li strong {
+            color: #333;
+        }
+        .detail-button-container {
+            text-align: right; /* Align button to the right */
+            margin-top: 10px; /* Space above the button */
+        }
+        .detail-button {
+            font-size: 14px;
+            padding: 5px 12px;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .detail-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Styling for the "Kembali ke Menu Utama" button */
+        .menu-navigation-container { /* Changed class name for clarity */
+            padding: 15px;
+            margin: 0 15px; /* Match margin with user-info and order-history-container */
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-top: 15px; /* Space above this section */
+        }
+        .menu-navigation-button { /* Changed class name for clarity */
+            display: inline-block;
+            width: 100%;
+            padding: 10px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #007bff; /* Changed to blue for navigation */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            text-decoration: none; /* Remove underline for anchor tag */
+        }
+        .menu-navigation-button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/dashboard"><img class="logo" src="/assets/foto/logo-piko.png" alt="Logo"></a>
+        <h4>Riwayat Pemesanan</h4>
+    </nav>
+
+    <div class="user-info">
+        <div class="info-item">
+            <div class="profile-circle">
+                <span id="profile-initial"></span>
+            </div>
+            <div>
+                <p><span id="nama-pelanggan"></span></p>
+                <p><span id="email-pelanggan" class="email-text"></span></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="menu-navigation-container">
+        <a href="/pesan-makanan" class="menu-navigation-button">Kembali ke Menu Pesan Makanan</a>
+    </div>
+    <br>
+
+    <div class="order-history-container" id="orderHistoryList">
+        </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let email = '';
+        let nama = '';
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            // Fetch user info
+            try {
+                const res = await fetch("/api/dashboard-info", {
+                    method: "POST",
+                    credentials: "include", // essential for session access
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+
+                if (!res.ok) throw new Error("Gagal mengambil data pengguna.");
+
+                const data = await res.json();
+                nama = data.nama;
+                email = data.email;
+
+                document.getElementById("nama-pelanggan").textContent = nama;
+                document.getElementById("email-pelanggan").textContent = email;
+
+                const initials = nama.split(" ").map(word => word.charAt(0).toUpperCase()).join("").slice(0, 2);
+                document.getElementById("profile-initial").textContent = initials;
+
+            } catch (err) {
+                console.error("Error fetching user info:", err);
+                document.getElementById("nama-pelanggan").textContent = "Nama Pengguna Tidak Ditemukan";
+                document.getElementById("email-pelanggan").textContent = "email@tidakditemukan.com";
+                document.getElementById("profile-initial").textContent = "??";
+            }
+
+            // Fetch order history
+            try {
+                const orderRes = await fetch("/api/order-history", {
+                    method: "GET", // Assuming GET for fetching history
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+
+                if (!orderRes.ok) {
+                    const errorText = await orderRes.text();
+                    throw new Error(`Gagal mengambil riwayat pesanan: ${orderRes.status} - ${errorText}`);
+                }
+
+                const orderHistory = await orderRes.json();
+                const orderHistoryList = document.getElementById("orderHistoryList");
+                orderHistoryList.innerHTML = ''; // Clear existing dummy content
+
+                if (orderHistory.length === 0) {
+                    orderHistoryList.innerHTML = '<p class="text-center text-muted mt-4">Belum ada riwayat pesanan.</p>';
+                    return;
+                }
+
+                orderHistory.forEach(order => {
+                    let statusText = '';
+                    let statusClass = '';
+
+                    // Map Midtrans transaction_status to user-friendly status and class
+                    switch (order.pembayaran.transaction_status) {
+                        case 'capture':
+                        case 'settlement':
+                            statusText = 'Lunas';
+                            statusClass = 'status-paid';
+                            break;
+                        case 'pending':
+                            statusText = 'Menunggu Pembayaran';
+                            statusClass = 'status-pending';
+                            break;
+                        case 'expire':
+                            statusText = 'Kedaluwarsa';
+                            statusClass = 'status-expire';
+                            break;
+                        case 'cancel':
+                            statusText = 'Dibatalkan';
+                            statusClass = 'status-cancel';
+                            break;
+                        case 'deny': // Also for failed or denied transactions
+                        case 'failed':
+                            statusText = 'Gagal';
+                            statusClass = 'status-failed';
+                            break;
+                        default:
+                            statusText = 'Tidak Diketahui';
+                            statusClass = '';
+                            break;
+                    }
+
+                    const orderDate = new Date(order.pembayaran.transaction_time).toLocaleDateString('id-ID', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                    });
+                    // Ensure orderAmount is treated as a number for formatting
+                    const orderAmount = parseInt(order.pembayaran.gross_amount || 0).toLocaleString('id-ID'); // Handle potential null/undefined
+
+                    let pesananDetailHtml = '';
+                    if (order.pesanan_kafe && order.pesanan_kafe.length > 0) {
+                        pesananDetailHtml += '<ul>';
+                        order.pesanan_kafe.forEach(item => {
+                            // Safely access nama_menu using optional chaining or conditional check
+                            const menuName = item.nama_menu || 'Nama Menu Tidak Tersedia';
+                            pesananDetailHtml += `<li>${menuName} (${item.jumlah}x)</li>`;
+                        });
+                        pesananDetailHtml += '</ul>';
+                    } else {
+                        pesananDetailHtml += '<p>Tidak ada detail pesanan kafe.</p>';
+                    }
+
+                    // For car wash orders
+                    let cuciDetailHtml = '';
+                    if (order.antrian_cuci && order.antrian_cuci.length > 0) {
+                        cuciDetailHtml += '<h6>Detail Antrian Cuci:</h6><ul>';
+                        order.antrian_cuci.forEach(cuci => {
+                            cuciDetailHtml += `<li>${cuci.merek_mobil} (${cuci.plat_nomor}) - Status: ${cuci.status}</li>`;
+                        });
+                        cuciDetailHtml += '</ul>';
+                    }
+
+                    const cardHtml = `
+                        <div class="order-history-card">
+                            <h6>Pembayaran #${order.pembayaran.id_pembayaran}</h6>
+                            <p><strong>Tanggal:</strong> ${orderDate}</p>
+                            <p><strong>Jumlah:</strong> Rp${orderAmount}</p>
+                            <p><strong>Status Pembayaran:</strong> <span class="${statusClass}">${statusText}</span></p>
+                            <div class="detail-button-container">
+                                <button class="detail-button" type="button" data-bs-toggle="collapse" data-bs-target="#orderDetail-${order.pembayaran.id_pembayaran}" aria-expanded="false" aria-controls="orderDetail-${order.pembayaran.id_pembayaran}">
+                                    Lihat Detail
+                                </button>
+                            </div>
+                            <div class="collapse order-details-section" id="orderDetail-${order.pembayaran.id_pembayaran}">
+                                <h6>Detail Pesanan Kafe:</h6>
+                                ${pesananDetailHtml}
+                                ${cuciDetailHtml}
+                                <p><strong>Metode Pembayaran:</strong> ${order.pembayaran.metode_pembayaran}</p>
+                                ${order.diskon ? `<p><strong>Diskon:</strong> ${order.diskon.nama} (${order.diskon.persen}%)</p>` : ''}
+                            </div>
+                        </div>
+                    `;
+                    orderHistoryList.insertAdjacentHTML('beforeend', cardHtml);
+                });
+
+            } catch (err) {
+                console.error("Error fetching order history:", err);
+                document.getElementById("orderHistoryList").innerHTML = `<p class="text-center text-danger mt-4">Gagal memuat riwayat pesanan: ${err.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
