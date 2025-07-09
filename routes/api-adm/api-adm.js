@@ -218,7 +218,8 @@ router.post("/dashboard-info", async (req, res) => {
     res.json({
       ...user,
       total_pesanan: pesananKafe._sum.jumlah || 0,
-      total_cuci: jumlahCuci
+      total_cuci: jumlahCuci,
+      diskon: diskon,
     });
 
   } catch (error) {

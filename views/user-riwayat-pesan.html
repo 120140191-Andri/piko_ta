@@ -228,7 +228,7 @@
             // Fetch user info
             try {
                 const res = await fetch("/api/dashboard-info", {
-                    method: "POST",
+                    method: "GET",
                     credentials: "include", // essential for session access
                     headers: {
                         "Content-Type": "application/json"

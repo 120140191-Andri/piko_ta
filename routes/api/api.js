@@ -71,26 +71,6 @@ router.post('/login-pelanggan', async (req, res) => {
   }
 });
 
-// Endpoint untuk mengambil info dashboard
-// GET request untuk informasi dashboard yang tidak memerlukan body
-router.get('/dashboard-infos', isAuthenticated, (req, res) => {
-    const userId = req.session.userId;
-    const user = users.find(u => u.id === userId); // Ambil data lengkap pengguna dari 'database'
-
-    if (user) {
-        // Kirim hanya data yang relevan untuk dashboard
-        res.json({
-            nama: user.nama,
-            email: user.email,
-            total_pesanan: user.total_pesanan,
-            total_cuci: user.total_cuci,
-            diskon_akun: user.diskon_akun
-        });
-    } else {
-        res.status(404).json({ message: "Pengguna tidak ditemukan" });
-    }
-});
-
 // Endpoint untuk logout
 router.post('/logout', (req, res) => {
     req.session.destroy(err => {
@@ -142,7 +122,7 @@ router.get("/dashboard-info", async (req, res) => {
 
     const ids = pembayaranIds.map(p => p.id_pembayaran);
     if (ids.length === 0) {
-      return res.json({ ...user, total_pesanan: 0, total_cuci: 0 });
+      //return res.json({ ...user, total_pesanan: 0, total_cuci: 0 });
     }
 
     const pesananKafe = await prisma.pesanan_kafe.aggregate({
@@ -157,10 +137,20 @@ router.get("/dashboard-info", async (req, res) => {
       }
     });
 
+    // Ambil diskon aktif untuk pelanggan
+    const diskonAktif = await prisma.diskon.findFirst({
+      where: {
+        id_pelanggan: Number(id_pelanggan),
+        aktif: true
+      },
+      orderBy: { id_diskon: 'desc' }
+    });
+
     res.json({
       ...user,
       total_pesanan: pesananKafe._sum.jumlah || 0,
-      total_cuci: jumlahCuci
+      total_cuci: jumlahCuci,
+      diskon_akun: diskonAktif ? diskonAktif.persen : 0,
     });
 
   } catch (error) {
@@ -301,14 +291,14 @@ router.post('/payment', async (req, res) => {
     // Kirim ke Midtrans dengan item_details
     const parameter = {
       transaction_details: {
-        order_id: `ORDER-${pembayaran.id_pembayaran}`,
+        order_id: `ORDERS-${pembayaran.id_pembayaran}`,
         gross_amount: total
       },
       item_details: itemDetails,
-      // customer_details: {
-      //   first_name: nama,
-      //   email: 'email@gmail.com'
-      // }
+      customer_details: {
+        first_name: nama,
+        email: email
+      }
     };
 
     const snapResponse = await snap.createTransaction(parameter);
@@ -323,7 +313,7 @@ router.post('/payment', async (req, res) => {
 router.post('/payment/callback', async (req, res) => {
     const { order_id, transaction_status } = req.body;
 
-    const id_pembayaran = parseInt(order_id.replace('ORDER-', ''));
+    const id_pembayaran = parseInt(order_id.replace('ORDERS-', ''));
 
     await prisma.pembayaran.update({
         where: { id_pembayaran },
@@ -333,8 +323,20 @@ router.post('/payment/callback', async (req, res) => {
         }
     });
 
-    console.log(id_pembayaran);
-    console.log(transaction_status);
+    if(transaction_status == 'settlement') {
+      const pembayaran = await prisma.pembayaran.findUnique({
+        where: { id_pembayaran },
+      });
+
+      if(pembayaran.id_diskon != null) {
+        const diskon = await prisma.diskon.update({
+          where: { id_diskon: pembayaran.id_diskon },
+          data: {
+            aktif: false
+          }
+        });
+      }
+    }
 
     res.status(200).send('OK');
 });

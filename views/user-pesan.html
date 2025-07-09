@@ -236,8 +236,8 @@
 
         document.addEventListener("DOMContentLoaded", async () => {
           try {
-            const res = await fetch("/api/dashboard-infos", {
-              method: "POST",
+            const res = await fetch("/api/dashboard-info", {
+              method: "GET",
               credentials: "include", // penting untuk akses session
               headers: {
                 "Content-Type": "application/json"
