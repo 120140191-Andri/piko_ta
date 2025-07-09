@@ -17,7 +17,7 @@ function checkLogin(req, res, next) {
   const user = req.session.pelanggan;
 
   if (!user) {
-    return res.status(401).json({ error: 'Anda harus login terlebih dahulu' });
+    res.redirect('/');
   }
 
   if (user.role !== 'pelanggan') {
